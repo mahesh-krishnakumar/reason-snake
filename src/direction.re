@@ -1,3 +1,8 @@
 type t =
   | Up
-  | Right;
+  | Right
+  | Down
+  | Left;
+
+type changeDirection =
+  | Option(t);

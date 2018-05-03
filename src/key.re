@@ -5,11 +5,20 @@ type t =
   | ArrowLeft
   | Ignore;
 
-let parseKey = evt =>
-  switch (Webapi.Dom.KeyboardEvent.key(evt)) {
+let parseKey = key =>
+  switch (key) {
   | "ArrowUp" => ArrowUp
   | "ArrowRight" => ArrowRight
   | "ArrowDown" => ArrowDown
   | "ArrowLeft" => ArrowLeft
   | _ => Ignore
+  };
+
+let getDirection = key =>
+  switch (key) {
+  | ArrowUp => Direction.Up
+  | ArrowRight => Direction.Right
+  | ArrowLeft => Direction.Left
+  | ArrowDown => Direction.Down
+  | Ignore => Direction.Right
   };

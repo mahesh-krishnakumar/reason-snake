@@ -7,9 +7,9 @@ let documentEventTarget =
   |> Ext.Option.unsafelyUnwrapOption
   |> Element.asEventTarget;
 
-let initialSnake = Snake.create([(10, 10), (11, 10), (12, 10), (13, 10)]);
+let initialSnake = Snake.create([(13, 10), (12, 10), (11, 10), (10, 10)]);
 
-let initialFood = Food.create((15, 10));
+let initialFood = Food.create((15, 9));
 
 let initialDirection = Direction.Right;
 
@@ -33,17 +33,9 @@ Js.Global.setInterval(handleTick, 300);
 
 let handleEvent = evt => {
   let oldWorld = state^;
-  let newWorld = {
-    ...oldWorld,
-    direction:
-      switch (Key.parseKey(evt)) {
-      | ArrowUp => Up
-      | ArrowRight => Right
-      | ArrowLeft
-      | ArrowDown
-      | Ignore => oldWorld.direction
-      },
-  };
+  let newDirection =
+    evt |> Webapi.Dom.KeyboardEvent.key |> Key.parseKey |> Key.getDirection;
+  let newWorld = World.create(oldWorld.snake, oldWorld.food, newDirection);
   state := newWorld;
 };
 

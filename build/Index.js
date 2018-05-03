@@ -3470,15 +3470,48 @@ exports.position = position;
 
 
 var List = __webpack_require__(10);
+var Pervasives = __webpack_require__(25);
 var Cell$SnakeGame = __webpack_require__(6);
 
-function move(t, _) {
-  return List.map((function (cell) {
-                return Cell$SnakeGame.create(/* tuple */[
-                            Cell$SnakeGame.x(cell) + 1 | 0,
-                            Cell$SnakeGame.y(cell)
-                          ]);
-              }), t);
+function move(snake, direction) {
+  var head = List.hd(snake);
+  var newTail = List.rev(List.tl(List.rev(snake)));
+  var newHead;
+  switch (direction) {
+    case 0 : 
+        newHead = Cell$SnakeGame.create(/* tuple */[
+              Cell$SnakeGame.x(head),
+              Cell$SnakeGame.y(head) - 1 | 0
+            ]);
+        break;
+    case 1 : 
+        newHead = Cell$SnakeGame.create(/* tuple */[
+              Cell$SnakeGame.x(head) + 1 | 0,
+              Cell$SnakeGame.y(head)
+            ]);
+        break;
+    case 2 : 
+        newHead = Cell$SnakeGame.create(/* tuple */[
+              Cell$SnakeGame.x(head),
+              Cell$SnakeGame.y(head) + 1 | 0
+            ]);
+        break;
+    case 3 : 
+        newHead = Cell$SnakeGame.create(/* tuple */[
+              Cell$SnakeGame.x(head) - 1 | 0,
+              Cell$SnakeGame.y(head)
+            ]);
+        break;
+    
+  }
+  console.log(Pervasives.$at(/* :: */[
+            newHead,
+            /* [] */0
+          ], List.rev(newTail)));
+  return Pervasives.$at(/* :: */[
+              newHead,
+              /* [] */0
+            ], newTail);
 }
 
 function create(xs) {
@@ -3518,22 +3551,22 @@ var documentEventTarget = Ext$SnakeGame.Option[/* unsafelyUnwrapOption */1](Ext$
 
 var initialSnake = Snake$SnakeGame.create(/* :: */[
       /* tuple */[
-        10,
+        13,
         10
       ],
       /* :: */[
         /* tuple */[
-          11,
+          12,
           10
         ],
         /* :: */[
           /* tuple */[
-            12,
+            11,
             10
           ],
           /* :: */[
             /* tuple */[
-              13,
+              10,
               10
             ],
             /* [] */0
@@ -3544,7 +3577,7 @@ var initialSnake = Snake$SnakeGame.create(/* :: */[
 
 var initialFood = Food$SnakeGame.create(/* tuple */[
       15,
-      10
+      9
     ]);
 
 var initialWorld = World$SnakeGame.create(initialSnake, initialFood, /* Right */1);
@@ -3573,19 +3606,8 @@ setInterval(handleTick, 300);
 
 function handleEvent(evt) {
   var oldWorld = state[0];
-  var match = Key$SnakeGame.parseKey(evt);
-  var newWorld_000 = /* canvasContext */oldWorld[/* canvasContext */0];
-  var newWorld_001 = /* snake */oldWorld[/* snake */1];
-  var newWorld_002 = /* food */oldWorld[/* food */2];
-  var newWorld_003 = /* direction */match !== 1 ? (
-      match !== 0 ? oldWorld[/* direction */3] : /* Up */0
-    ) : /* Right */1;
-  var newWorld = /* record */[
-    newWorld_000,
-    newWorld_001,
-    newWorld_002,
-    newWorld_003
-  ];
+  var newDirection = Key$SnakeGame.getDirection(Key$SnakeGame.parseKey(evt.key));
+  var newWorld = World$SnakeGame.create(oldWorld[/* snake */1], oldWorld[/* food */2], newDirection);
   state[0] = newWorld;
   return /* () */0;
 }
@@ -3862,9 +3884,8 @@ exports.Impl = Impl;
 
 
 
-function parseKey(evt) {
-  var match = evt.key;
-  switch (match) {
+function parseKey(key) {
+  switch (key) {
     case "ArrowDown" : 
         return /* ArrowDown */2;
     case "ArrowLeft" : 
@@ -3878,7 +3899,23 @@ function parseKey(evt) {
   }
 }
 
+function getDirection(key) {
+  switch (key) {
+    case 0 : 
+        return /* Up */0;
+    case 2 : 
+        return /* Down */2;
+    case 3 : 
+        return /* Left */3;
+    case 1 : 
+    case 4 : 
+        return /* Right */1;
+    
+  }
+}
+
 exports.parseKey = parseKey;
+exports.getDirection = getDirection;
 /* No side effect */
 
 
