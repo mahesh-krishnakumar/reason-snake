@@ -3,6 +3,3 @@ type t =
   | Right
   | Down
   | Left;
-
-type changeDirection =
-  | Option(t);

@@ -21,7 +21,10 @@ let handleTick = () => {
   let oldWorld = state^;
   let newWorld = {
     ...oldWorld,
-    snake: Snake.move(oldWorld.snake, Direction.Right),
+    snake: Snake.move(oldWorld.snake, oldWorld.direction, oldWorld.food),
+    food:
+      Food.position(oldWorld.food) == List.hd(Snake.body(oldWorld.snake)) ?
+        Food.newFood() : oldWorld.food,
   };
   state := newWorld;
   Draw.clearScene();
@@ -33,8 +36,8 @@ Js.Global.setInterval(handleTick, 300);
 
 let handleEvent = evt => {
   let oldWorld = state^;
-  let newDirection =
-    evt |> Webapi.Dom.KeyboardEvent.key |> Key.parseKey |> Key.getDirection;
+  let parsedKey = evt |> Webapi.Dom.KeyboardEvent.key |> Key.parseKey;
+  let newDirection = Key.getDirection(parsedKey, oldWorld.direction);
   let newWorld = World.create(oldWorld.snake, oldWorld.food, newDirection);
   state := newWorld;
 };

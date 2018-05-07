@@ -14,11 +14,13 @@ let parseKey = key =>
   | _ => Ignore
   };
 
-let getDirection = key =>
-  switch (key) {
-  | ArrowUp => Direction.Up
-  | ArrowRight => Direction.Right
-  | ArrowLeft => Direction.Left
-  | ArrowDown => Direction.Down
-  | Ignore => Direction.Right
+let getDirection = (key, currentDirection) =>
+  switch (key, currentDirection) {
+  | (ArrowUp, Direction.Up | Direction.Left | Direction.Right) => Direction.Up
+  | (ArrowRight, Direction.Right | Direction.Up | Direction.Down) => Direction.Right
+  | (ArrowLeft, Direction.Left | Direction.Up | Direction.Down) => Direction.Left
+  | (ArrowDown, Direction.Left | Direction.Right | Direction.Down) => Direction.Down
+  | (ArrowUp | ArrowDown, Direction.Up | Direction.Down) => currentDirection
+  | (ArrowRight | ArrowLeft, Direction.Right | Direction.Left) => currentDirection
+  | (Ignore, d) => d
   };
